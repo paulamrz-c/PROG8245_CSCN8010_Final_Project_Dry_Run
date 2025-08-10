@@ -1,0 +1,207 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Self-Service Chatbot: Proof of Concept</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 40px;
+            background-color: #ffffff;
+            color: #333;
+            line-height: 1.6;
+        }}
+        h1, h2, h3 {{
+            color: #20435c;
+        }}
+        code {{
+            background-color: #f4f4f4;
+            padding: 2px 4px;
+            font-size: 90%;
+        }}
+        pre {{
+            background: #f4f4f4;
+            padding: 10px;
+            overflow-x: auto;
+        }}
+        .highlight {{
+            background-color: #e7f3ff;
+            padding: 2px 4px;
+            border-left: 4px solid #1e88e5;
+        }}
+        .team {{
+            background-color: #f9f9f9;
+            border-left: 4px solid #4caf50;
+            padding: 10px;
+            margin-top: 20px;
+        }}
+        .image-container {{
+            text-align: center;
+            margin: 30px 0;
+        }}
+        img {{
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+        }}
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center;">🤖 AI Student Support Chatbot: Proof of Concept</h1>
+    <p>This repository presents a <strong>Proof of Concept (PoC)</strong> for a chatbot designed to reduce the workload of Student Success Advisors by answering frequent student queries using <strong>NLP</strong>, <strong>semantic search</strong>, and <strong>predictive classification</strong>.</p>
+    <div class="team">
+        <h2>👥 Team 7:</h2>
+        <ul>
+            <li>Paula Ramirez (8963215)</li>
+            <li>Babandeep (9001552)</li>
+            <li>Hasyashri Bhatt (9028501)</li>
+        </ul>
+    </div>
+    <div class="image-container">
+      <h2>🧱 System Architecture</h2>
+      <p>This diagram shows the complete pipeline used in our Proof of Concept:</p>
+      <ul>
+          <li>Data ingestion and preprocessing from PDFs and web scraping</li>
+          <li>Embedding generation using GloVe, Word2Vec, and HuggingFace</li>
+          <li>Query classification and semantic similarity search</li>
+          <li>Fallback logic using a generative LLM</li>
+      </ul>
+      <div style="text-align: center;">
+        <img src="assets/Architecture.png" alt="System Architecture Diagram" style="max-width: 90%;height: auto; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+        <p style="text-align: center; color: gray;"><em>Source: <code>resources/Architecture.png</code></em></p>
+      </div>
+  </div>
+
+    <h2>📁 Project Structure</h2>
+    <pre>
+Self-Service_Portal_Final_Project/
+├── data/                      
+│   ├── raw/                   # Original input data (PDFs, CSV)
+│   └── processed/             # Cleaned CSVs and vector pickles
+├── models/                   # Trained classifier, Label Encoder          
+├── notebooks/                # Jupyter notebooks for end-to-end pipeline for building the chatbot's backend.
+│   ├── 01_scrapping.ipynb
+│   ├── 02_extract_FAQs_Resources.ipynb
+│   ├── 03_build_embeddings.ipynb
+│   └── 04_train_classifier.ipynb
+├── resources/                # Architecture diagrams and submission instructions
+├── src/                      # All backend source code
+│   ├── api.py                # FastAPI app for query prediction
+│   ├── chatbot_interface.py  # Streamlit frontend
+│   ├── retriever.py          # Embedding search, classifier + LLM fallback
+│   ├── query_classifier.py   # PyTorch classifier for query type
+│   ├── embedding_hf.py       # SentenceTransformer encoder
+│   ├── models.py             # Classifier architecture (torch.nn)
+│   ├── openai_utils.py       # (Optional) support for OpenAI APIs
+│   └── test.py               # Unit testing logic
+├── docs/                     # GitHub Pages static site
+│   ├── index.html            # HTML report for project presentation
+│   └── assets/               # Screenshots used in HTML
+├── requirements.txt          # Python dependencies
+└── README.md                 # Project overview
+    </pre>
+    <div class="image-container">
+        <h2>🧩 End-to-End File Dependency Flow</h2>
+        <p>This diagram shows how the entire codebase is connected — from data ingestion to query prediction and chatbot interaction.</p>
+        <div style="text-align: center;">
+            <img src="assets/Modules.png" alt="File Dependency Flow" style="max-width: 80%; height: auto; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+        </div>
+        <p style="text-align: center; color: gray;"><em>Source: <code>Modules.png</code></em></p>
+    </div>
+    <h2>🧠 NLP Pipeline</h2>
+    <ul>
+      <li>Text normalization: <code>ftfy</code>, <code>unicodedata</code>, <code>re</code> (used only for Word2Vec and GloVe)</li>
+      <li>Lemmatization & tokenization: <code>spaCy</code> (only used for Word2Vec and GloVe)</li>
+      <li>Vectorization:
+          <ul>
+              <li><strong>Word2Vec</strong>: Trained on local FAQs and student resources</li>
+              <li><strong>GloVe</strong>: Pretrained (100d) from Stanford</li>
+              <li><strong>HuggingFace Sentence Transformers</strong>: <code>all-MiniLM-L6-v2</code> – used as final model due to superior semantic precision</li>
+          </ul>
+      </li>
+      <li>Query classification: <code>faq</code>, <code>resource</code>, <code>chitchat</code>, <code>offramp</code> (via PyTorch classifier)</li>
+    </ul>
+
+    <h2>📚 Corpus Construction</h2>
+    <ul>
+        <li>FAQs from Winter 2024 PDF documents</li>
+        <li>Scraped resources from <a href="https://successportal.conestogac.on.ca/">Student Success Portal</a></li>
+        <li>Unified index with sentence embeddings</li>
+    </ul>
+
+    <h2>🔍 Retrieval Logic (Retriever)</h2>
+    <p><strong>This is the brain of the chatbot system</strong>, implemented in <code>src/retriever.py</code>:</p>
+    <ul>
+        <li>Receives a student query and classifies it as <code>faq</code>, <code>resource</code>, <code>chitchat</code>, or <code>offramp</code></li>
+        <li>Encodes the query into a vector using the selected embedding model (Word2Vec, GloVe, or HuggingFace)</li>
+        <li>Compares the query vector with all document vectors using cosine similarity</li>
+        <li>If the similarity is high (> 0.8), returns the matched FAQ or resource directly (even for <code>chitchat</code>)</li>
+        <li>If similarity is too low or if the query is <code>chitchat</code>/<code>offramp</code>, falls back to an LLM response or human advisor escalation</li>
+    </ul>
+
+    <h2>💬 Demo Features</h2>
+    <p>Ask questions like:</p>
+    <ul>
+        <li>"Hi my name is Paula"</li>
+        <li>"How can I pay my fees?"</li>
+        <li>"I need help creating my CV"</li>
+        <li>"My student status will expire"</li>
+        <li> "I need a human advisor, I am tired!" </li>
+    </ul>
+    <div style="text-align: center;">
+      <iframe width="800" height="500"
+          src="assets/Demo Video.mp4"
+          title="Chatbot Demo"
+          frameborder="0"
+          allowfullscreen>
+      </iframe>
+    </div>
+
+    <h2>🤖 Models Used</h2>
+    <ul>
+        <li>Word2Vec: Trained on internal FAQs + resources</li>
+        <li>GloVe: Pre-trained (100d) from Stanford</li>
+        <li>HuggingFace: <code>all-MiniLM-L6-v2</code> – used for semantic sentence embeddings</li>
+        <li>PyTorch Classifier: Predicts query type (<code>faq</code>, <code>resource</code>, <code>chitchat</code>, <code>offramp</code>)</li>
+        <li>DistilGPT2: LLM fallback for chitchat and low-confidence queries</li>
+    </ul>
+
+    <h2>🛠 To Do / Future Work</h2>
+    <ul>
+        <li>Override <code>chitchat</code> classification if similarity is very high (e.g., > 0.85)</li>
+        <li>Enable user feedback to flag irrelevant or incorrect answers</li>
+        <li><strong>OpenAI API Integration</strong> – Use GPT-based models for more natural, conversational responses (currently integrated via fallback)</li>
+        <li><strong>Multilingual Support</strong> – Add language detection and translation to support international students</li>
+        <li><strong>Multi-Embedding Support</strong> – Combine transformer embeddings (HuggingFace) with GloVe or Word2Vec for better retrieval performance</li>
+    </ul>
+
+    <h2>🚀 How to Run the Application</h2>
+
+    <h4>1. Activate your virtual environment (PowerShell):</h4>
+    <pre><code>Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+.env\Scriptsctivate</code></pre>
+
+    <h4>2. Run the FastAPI backend:</h4>
+    <pre><code>uvicorn src.api:app --reload</code></pre>
+
+    <h4>3. Launch the Streamlit chatbot interface:</h4>
+    <pre><code>streamlit run src/chatbot_interface.py --server.port 8501</code></pre>
+    <h2>🔗 Project Links</h2>
+    <ul>
+        <li>
+            🗂️ <strong>GitHub Repository:</strong>
+            <a href="https://github.com/paulamrz-c/PROG8245_CSCN8010_Final_Project_Dry_Run.git" target="_blank">
+                https://github.com/paulamrz-c/PROG8245_CSCN8010_Final_Project_Dry_Run
+            </a>
+        </li>
+        <li>
+            🧠 <strong>Architecture Diagram (Excalidraw):</strong>
+            <a href="https://excalidraw.com/#room=3e452a134efd9f4c6706,qlqqvH74HTB036Ymdj8VTQ" target="_blank">
+                Open Diagram in Excalidraw
+            </a>
+        </li>
+    </ul>
+</body>
+</html>
