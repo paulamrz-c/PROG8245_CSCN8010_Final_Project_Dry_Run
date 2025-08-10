@@ -3,3 +3,4 @@ venv/
 .env
 __pycache__/
 notebooks/debug_after_login_chrome.html
+models/embeddings/*
