@@ -125,7 +125,7 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
 ```
 ### 2. Run the FastAPI backend:
 ```powershell
-streamlit run src/chatbot_interface.py --server.port 8501
+uvicorn src.api:app --reload --port 8000
 ```
 ### 3. Launch the Streamlit chatbot interface:
 ```powershell

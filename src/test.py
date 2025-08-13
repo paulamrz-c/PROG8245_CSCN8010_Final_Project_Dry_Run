@@ -31,9 +31,9 @@ hola
 
 print("*********")
 
-print(answer("What is VMock?", model_type="w2v"))
-print(answer("What is VMock?", model_type="glove"))
-print(answer("What is VMock?", model_type="hf"))
+print(answer("I want pay my fees", model_type="w2v"))
+print(answer("I want pay my fees", model_type="glove"))
+print(answer("I want pay my fees", model_type="hf"))
 
 # print("*********")
 

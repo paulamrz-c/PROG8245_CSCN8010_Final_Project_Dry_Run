@@ -16,12 +16,28 @@ if "messages" not in st.session_state:
 def auto_convert_links(text: str) -> str:
     return re.sub(r'(https?://[^\s\)\]]+)', r'[\1](\1)', text)
 
-# Title and instructions
-st.title("🎓 AI Student Support Chatbot 🤖")
+# Title 
+st.markdown(
+    """
+    <h1 style='text-align: center;'>AskStoga 🤖</h1>
+    """,
+    unsafe_allow_html=True
+)
+# center the markdown
+st.markdown(
+    """
+    <style>
+        .stMarkdown {
+            text-align: center;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+st.markdown("🎓 an AI Student Support Chatbot")
 st.caption("Ask me anything. I’ll try to find the most relevant FAQ or student resource.")
 
 
-# Showing History
 # Showing History
 for sender, message in st.session_state.messages:
     if "[" not in message and "]" not in message and "http" in message:
